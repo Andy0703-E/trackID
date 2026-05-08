@@ -37,12 +37,13 @@ async function trackBiteship(resi, courierCode) {
   const url = `https://api.biteship.com/v1/public/trackings/${resi}/couriers/${courierCode}`;
   const { data } = await axios.get(url, {
     headers: {
-      accept: 'application/json',
-      authorization: 'Public',
-      origin: 'https://biteship.com',
-      referer: 'https://biteship.com/',
+      'accept': 'application/json',
+      'authorization': 'Public',
+      'origin': 'https://biteship.com',
+      'referer': 'https://biteship.com/',
+      'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
     },
-    timeout: 10000,
+    timeout: 12000,
   });
   
   const history = (data.history || []).map(h => ({
@@ -66,23 +67,34 @@ async function trackBiteship(resi, courierCode) {
 
 async function trackSPX(resi) {
   const url = `https://spx.co.id/shipment/order/open/order/get_order_info?spx_tn=${resi}&language_code=id`;
+  
   const { data: json } = await axios.get(url, {
     headers: {
-      accept: 'application/json, text/plain, */*',
-      cookie: 'app_source=nss; app_lang=id',
-      referer: `https://spx.co.id/m/tracking-detail/${resi}`,
-      'user-agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Mobile Safari/537.36',
+      'accept': 'application/json, text/plain, */*',
+      'accept-language': 'id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7',
+      'cookie': 'app_source=nss; app_lang=id',
+      'referer': `https://spx.co.id/m/tracking-detail/${resi}`,
+      'user-agent': 'Mozilla/5.0 (Linux; Android 13; SM-S901B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Mobile Safari/537.36',
+      'x-requested-with': 'XMLHttpRequest'
     },
-    timeout: 10000,
+    timeout: 12000,
   });
 
-  const payload = json?.data?.sls_tracking_info ? json.data : (json?.sls_tracking_info ? json : json?.data || json);
+  // Defensive unwrap (Sama seperti di app.js)
+  let payload = json?.data?.sls_tracking_info ? json.data : 
+               (json?.sls_tracking_info ? json : 
+               (json?.data ? json.data : json));
 
-  if (!payload?.sls_tracking_info) throw new Error('Data SPX tidak ditemukan.');
+  if (!payload?.sls_tracking_info && !payload?.fulfillment_info) {
+    throw new Error('Nomor resi tidak ditemukan atau server kurir sedang sibuk. Pastikan resi SPX sudah benar.');
+  }
 
-  const sls = payload.sls_tracking_info;
-  const records = (sls.records || []).filter(r => r.display_flag_v2 !== 0);
-  const src = records.length ? records : (sls.records || []);
+  const sls = payload.sls_tracking_info || {};
+  const records = Array.isArray(sls.records) ? sls.records : [];
+  
+  // Filter records yang valid untuk ditampilkan
+  const filtered = records.filter(r => r.display_flag_v2 !== 0);
+  const src = filtered.length ? filtered : records;
 
   const history = src.map(r => ({
     date: r.actual_time ? new Date(r.actual_time * 1000).toISOString() : '',
@@ -90,7 +102,7 @@ async function trackSPX(resi) {
     loc:  r.current_location?.location_name || '',
   }));
 
-  const status = payload.order_status_desc || src[0]?.milestone_name || history[0]?.desc || 'Dalam Pengiriman';
+  const status = payload.order_status_desc || (src[0]?.milestone_name) || (history[0]?.desc) || 'Sedang Diproses';
 
   return {
     resi: sls.sls_tn || resi,
@@ -106,11 +118,16 @@ async function trackSPX(resi) {
 
 async function trackPackage(resi, courierInput) {
   const key = resolveCourier(courierInput);
-  if (!key) throw new Error(`Ekspedisi tidak dikenal: ${courierInput}`);
+  if (!key) throw new Error(`Ekspedisi tidak dikenal: ${courierInput}\n\nKode valid: jne, jnt, sicepat, spx, anteraja, tiki, ninja, pos, lion, idexpress.`);
 
   const c = COURIERS[key];
-  if (c.special === 'spx') return trackSPX(resi);
-  if (c.biteship) return trackBiteship(resi, c.biteship);
+  try {
+    if (c.special === 'spx') return await trackSPX(resi);
+    if (c.biteship) return await trackBiteship(resi, c.biteship);
+  } catch (err) {
+    if (err.response?.status === 403) throw new Error('Akses ke server kurir dibatasi oleh sistem (Rate Limit). Coba beberapa saat lagi.');
+    throw err;
+  }
   throw new Error('Ekspedisi belum didukung');
 }
 
