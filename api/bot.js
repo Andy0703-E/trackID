@@ -31,12 +31,12 @@ function buildMsg(data) {
   });
   
   msg += `━━━━━━━━━━━━━━\n`;
-  msg += `_Powered by TrackID_`;
+  msg += `👤 *Owner:* Andi Agung\n`;
+  msg += `🌐 *Web:* [TrackID](https://track-id-opal.vercel.app/)\n`;
   return msg;
 }
 
 module.exports = async (req, res) => {
-  // Dukung pesan baru (message) maupun pesan yang diedit (edited_message)
   const msgObj = req.body.message || req.body.edited_message;
   
   if (!msgObj || !msgObj.text) {
@@ -48,9 +48,8 @@ module.exports = async (req, res) => {
 
   try {
     if (text === '/start') {
-      await bot.sendMessage(chatId, `👋 Halo! Kirim nomor resi dan kode ekspedisi untuk melacak.\n\nFormat: \`/lacak [resi] [ekspedisi]\`\nContoh: \`/lacak SPXID061577510985 spx\`\n\nID Chat Anda: \`${chatId}\``, { parse_mode: 'Markdown' });
+      await bot.sendMessage(chatId, `👋 Halo! Selamat datang di *TrackID Bot*.\n\nLacak paket Anda dengan mudah dan cepat. Dikembangkan oleh *Andi Agung (Owner)*.\n\nFormat Lacak:\n\`/lacak [resi] [ekspedisi]\` \nContoh: \`/lacak SPXID123 spx\`\n\nID Chat Anda: \`${chatId}\``, { parse_mode: 'Markdown' });
     } else if (text.toLowerCase().startsWith('/lacak')) {
-      // Gunakan regex untuk memisahkan berdasarkan spasi/baris baru apapun
       const parts = text.split(/\s+/); 
       
       if (parts.length < 3) {
@@ -63,11 +62,8 @@ module.exports = async (req, res) => {
         const data = await trackPackage(resi, courier);
         await bot.sendMessage(chatId, buildMsg(data), { parse_mode: 'Markdown' });
       }
-    } else {
-      // Abaikan jika bukan perintah
     }
   } catch (err) {
-    console.error('[BOT ERROR]', err.message);
     await bot.sendMessage(chatId, `❌ *Gagal Melacak*\n\n${err.message}`, { parse_mode: 'Markdown' });
   }
 
