@@ -35,11 +35,15 @@ function buildMsg(data) {
 }
 
 module.exports = async (req, res) => {
+  console.log('[BOT] Method:', req.method);
+  
   if (req.method !== 'POST') {
-    return res.status(200).send('Bot is running');
+    return res.status(200).send('Bot is active and waiting for Webhook.');
   }
 
   const { message } = req.body;
+  console.log('[BOT] Body:', JSON.stringify(req.body));
+
   if (!message || !message.text) {
     return res.status(200).send('OK');
   }
@@ -49,23 +53,27 @@ module.exports = async (req, res) => {
 
   try {
     if (text === '/start') {
-      await bot.sendMessage(chatId, `👋 Halo! Kirim nomor resi dan kode ekspedisi untuk melacak.\nFormat: \`/lacak [resi] [ekspedisi]\`\nContoh: \`/lacak SPXID061577510985 spx\`\n\nID Chat Anda: \`${chatId}\``, { parse_mode: 'Markdown' });
+      await bot.sendMessage(chatId, `👋 Halo! Kirim nomor resi dan kode ekspedisi untuk melacak.\n\nFormat: \`/lacak [resi] [ekspedisi]\`\nContoh: \`/lacak SPXID061577510985 spx\`\n\nID Chat Anda: \`${chatId}\``, { parse_mode: 'Markdown' });
     } else if (text.startsWith('/lacak')) {
       const parts = text.split(' ');
-      if (parts.length < 3) throw new Error('Format salah. Gunakan: `/lacak [resi] [ekspedisi]`');
-      
-      const resi = parts[1];
-      const courier = parts[2];
-      
-      await bot.sendMessage(chatId, `⏳ Sedang melacak resi \`${resi}\`...`, { parse_mode: 'Markdown' });
-      const data = await trackPackage(resi, courier);
-      await bot.sendMessage(chatId, buildMsg(data), { parse_mode: 'Markdown' });
+      if (parts.length < 3) {
+        await bot.sendMessage(chatId, '❌ Format salah. Gunakan: `/lacak [resi] [ekspedisi]`\nContoh: `/lacak JX123 jnt`');
+      } else {
+        const resi = parts[1];
+        const courier = parts[2];
+        
+        await bot.sendMessage(chatId, `⏳ Sedang melacak resi \`${resi}\`...`, { parse_mode: 'Markdown' });
+        const data = await trackPackage(resi, courier);
+        await bot.sendMessage(chatId, buildMsg(data), { parse_mode: 'Markdown' });
+      }
     } else {
-      await bot.sendMessage(chatId, `Gunakan perintah /lacak [resi] [ekspedisi] untuk memulai.`);
+      await bot.sendMessage(chatId, `Gunakan perintah /lacak [resi] [ekspedisi] untuk mulai melacak.`);
     }
   } catch (err) {
+    console.error('[BOT ERROR]', err.message);
     await bot.sendMessage(chatId, `❌ Error: ${err.message}`);
   }
 
+  // Penting: Selalu kirim respons 200 OK agar Telegram tidak mengirim ulang pesan yang sama
   res.status(200).send('OK');
 };
