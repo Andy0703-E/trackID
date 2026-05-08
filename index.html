@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>TrackID — Cek Resi Paket Indonesia</title>
+  <meta name="description" content="Lacak status pengiriman paket secara real-time. Dukung JNE, J&T, SiCepat, SPX, Anteraja, TIKI, dan 15+ ekspedisi lainnya."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="container header-inner">
+    <a href="#" class="logo" id="logoHome">
+      <div class="logo-mark">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+        </svg>
+      </div>
+      <span class="logo-name">Track<span>ID</span></span>
+    </a>
+    <nav class="nav">
+      <a href="#" id="navTrack">Lacak Resi</a><a href="#couriers">Ekspedisi</a><a href="tarif.html">Estimasi Tarif</a><a href="api.html">API</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="hero" id="heroSection">
+    <div class="container">
+      <div class="hero-tag">
+        <span class="pulse-dot"></span>
+        LIVE TRACKING · 20+ EKSPEDISI
+      </div>
+      <h1>Lacak Paket Anda<br/><em>Real-Time, Akurat, Cepat</em></h1>
+      <p class="hero-sub">Pantau status pengiriman dari semua ekspedisi populer Indonesia — mulai dari JNE, J&T, SiCepat, SPX, dan banyak lagi, hanya dengan satu klik.</p>
+
+      <!-- Search Card -->
+      <div class="search-card" id="searchCard">
+        <!-- Loading overlay -->
+        <div class="card-overlay hidden" id="cardOverlay">
+          <svg class="spin" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+          <p id="overlayText">Menghubungi server ekspedisi…</p>
+          <div class="progress-bar"><div class="progress-fill"></div></div>
+        </div>
+
+        <div class="form-row">
+          <!-- Resi Input -->
+          <div class="field">
+            <label class="field-label" for="resiInput">Nomor Resi</label>
+            <div class="input-wrap">
+              <svg class="field-ico" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+              </svg>
+              <input type="text" id="resiInput" class="field-input" placeholder="Masukkan nomor resi…" autocomplete="off" spellcheck="false"/>
+              <button class="clear-x" id="clearBtn" type="button" tabindex="-1">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Courier Select -->
+          <div class="field">
+            <label class="field-label" for="courierSelect">Ekspedisi</label>
+            <div class="input-wrap">
+              <svg class="field-ico" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+              <select id="courierSelect" class="field-select">
+                <option value="">— Pilih Ekspedisi —</option>
+                <option value="spx">SPX / Shopee Express</option>
+                <option value="jne">JNE Express</option>
+                <option value="jnt">J&T Express</option>
+                <option value="sicepat">SiCepat</option>
+                <option value="anteraja">Anteraja</option>
+                <option value="tiki">TIKI</option>
+                <option value="ninja">Ninja Xpress</option>
+                <option value="pos">POS Indonesia</option>
+                <option value="lion">Lion Parcel</option>
+                <option value="sap">SAP Express</option>
+                <option value="jd">JD Logistics</option>
+                <option value="paxel">Paxel</option>
+                <option value="idexpress">ID Express</option>
+                <option value="wahana">Wahana</option>
+                <option value="gosend">GoSend</option>
+                <option value="grab">GrabExpress</option>
+                <option value="lazada">Lazada Express</option>
+                <option value="lalamove">Lalamove</option>
+              </select>
+              <svg class="sel-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+          </div>
+
+          <!-- Button -->
+          <button class="btn-track" id="trackBtn" type="button">
+            <span class="btn-inner" id="btnText">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              Lacak
+            </span>
+            <span class="btn-inner hidden" id="btnLoader">
+              <svg class="spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+              Melacak…
+            </span>
+          </button>
+        </div>
+
+        <!-- Quick examples -->
+        <div class="examples">
+          <span class="ex-label">Contoh:</span>
+          <button class="ex-btn" id="ex1" data-resi="SPXID061577510985" data-c="spx">SPX: SPXID06…</button>
+          <button class="ex-btn" id="ex2" data-resi="000043368382" data-c="jne">JNE: 000043…</button>
+          <button class="ex-btn" id="ex3" data-resi="10000017271929" data-c="sicepat">SiCepat: 1000…</button>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats">
+        <div class="stat"><span class="stat-n">20+</span><span class="stat-l">Ekspedisi</span></div>
+        <div class="stat-div"></div>
+        <div class="stat"><span class="stat-n">Real-time</span><span class="stat-l">Update</span></div>
+        <div class="stat-div"></div>
+        <div class="stat"><span class="stat-n">Gratis</span><span class="stat-l">Tanpa Daftar</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULT -->
+  <section class="result-sec hidden" id="resultSec">
+    <div class="container">
+      <div class="res-topbar">
+        <button class="btn-back" id="backBtn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          Kembali
+        </button>
+        <div class="resi-tag" id="resiTag"></div>
+      </div>
+
+      <!-- Status -->
+      <div class="status-card">
+        <div class="status-top">
+          <div class="courier-info">
+            <div class="courier-icon" id="courierIcon"></div>
+            <div>
+              <div class="c-name" id="courierName"></div>
+              <div class="c-resi" id="courierResi"></div>
+            </div>
+          </div>
+          <span class="status-pill" id="statusPill"></span>
+        </div>
+        <div class="meta-grid" id="metaGrid"></div>
+      </div>
+
+      <!-- Timeline -->
+      <div class="timeline-card">
+        <div class="tl-head">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <h3>Riwayat Pengiriman</h3>
+        </div>
+        <div class="timeline" id="timeline"></div>
+      </div>
+
+      <!-- Telegram Integration -->
+      <div class="status-card" style="margin-top: 16px; border-color: rgba(14,165,233,0.3); background: rgba(14,165,233,0.03);">
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+          <h3 style="font-size: 0.9rem; font-weight: 700;">Kirim ke Telegram</h3>
+        </div>
+        <p style="font-size: 0.8rem; color: var(--txt-2); margin-bottom: 14px;">Terima detail pelacakan langsung di Telegram Anda. Masukkan Chat ID dari bot <a href="https://t.me/your_bot_username" target="_blank" style="color: var(--accent-2); text-decoration: none;">@TrackID_Bot</a>.</p>
+        <div style="display: flex; gap: 8px;">
+          <input type="text" id="tgChatId" class="field-input" style="height: 40px; font-size: 0.85rem;" placeholder="Masukkan Chat ID (contoh: 1234567)">
+          <button id="btnSendTg" class="btn-track" style="height: 40px; padding: 0 20px; font-size: 0.85rem;">
+            <span id="tgBtnText">Kirim</span>
+            <span id="tgBtnLoader" class="hidden"><svg class="spin" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg></span>
+          </button>
+        </div>
+        <p id="tgStatus" style="font-size: 0.75rem; margin-top: 8px; font-weight: 500;" class="hidden"></p>
+      </div>
+
+      <!-- Raw JSON -->
+      <div>
+        <button class="json-toggle" id="jsonToggle">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          Lihat Data Mentah (JSON)
+        </button>
+        <div class="json-box hidden" id="jsonBox"><pre id="jsonPre"></pre></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ERROR -->
+  <section class="error-sec hidden" id="errorSec">
+    <div class="container">
+      <div class="error-box">
+        <div class="error-ico">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </div>
+        <h3 class="error-ttl" id="errTitle">Resi Tidak Ditemukan</h3>
+        <p class="error-msg" id="errMsg">Pastikan nomor resi dan ekspedisi yang dipilih sudah benar, lalu coba kembali.</p>
+        <button class="btn-retry" id="retryBtn">Coba Lagi</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- COURIERS -->
+  <section class="couriers-sec" id="couriers">
+    <div class="container">
+      <div class="sec-head">
+        <div class="sec-label">Didukung Oleh</div>
+        <h2 class="sec-title">20+ Ekspedisi Indonesia</h2>
+        <p class="sec-sub">Semua ekspedisi populer yang beroperasi di Indonesia tersedia</p>
+      </div>
+      <div class="courier-grid">
+        <div class="c-card"><div class="c-logo jne-c">JNE</div><span>JNE Express</span></div>
+        <div class="c-card"><div class="c-logo jnt-c">J&T</div><span>J&T Express</span></div>
+        <div class="c-card"><div class="c-logo scp-c">SCP</div><span>SiCepat</span></div>
+        <div class="c-card"><div class="c-logo spx-c">SPX</div><span>Shopee Express</span></div>
+        <div class="c-card"><div class="c-logo ant-c">ANT</div><span>Anteraja</span></div>
+        <div class="c-card"><div class="c-logo tiki-c">TIKI</div><span>TIKI</span></div>
+        <div class="c-card"><div class="c-logo nxp-c">NXP</div><span>Ninja Xpress</span></div>
+        <div class="c-card"><div class="c-logo pos-c">POS</div><span>POS Indonesia</span></div>
+        <div class="c-card"><div class="c-logo lp-c">LP</div><span>Lion Parcel</span></div>
+        <div class="c-card"><div class="c-logo go-c">GO</div><span>GoSend</span></div>
+        <div class="c-card"><div class="c-logo gx-c">GX</div><span>GrabExpress</span></div>
+        <div class="c-card"><div class="c-logo pxl-c">PXL</div><span>Paxel</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="faq-sec" id="faq">
+    <div class="container">
+      <div class="sec-head">
+        <div class="sec-label">FAQ</div>
+        <h2 class="sec-title">Pertanyaan Umum</h2>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item">
+          <button class="faq-q">Berapa lama update status tracking?
+            <svg class="faq-arr" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="faq-a"><p>Status tracking diperbarui secara real-time setiap kali paket tiba di titik pengiriman baru. Biasanya update terjadi dalam beberapa menit setelah proses di gudang atau hub.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">Mengapa resi saya tidak ditemukan?
+            <svg class="faq-arr" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="faq-a"><p>Kemungkinan: (1) Nomor resi belum terdaftar — butuh 1–3 jam setelah paket diserahkan ke ekspedisi. (2) Ekspedisi yang dipilih tidak sesuai. (3) Ada kesalahan ketik pada nomor resi.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">Apakah layanan ini gratis?
+            <svg class="faq-arr" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="faq-a"><p>Ya, 100% gratis tanpa perlu daftar akun. TrackID mengakses data langsung dari API resmi ekspedisi untuk memberikan informasi terkini.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">Ekspedisi apa saja yang didukung?
+            <svg class="faq-arr" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="faq-a"><p>TrackID mendukung 20+ ekspedisi: JNE, J&T Express, SiCepat, SPX/Shopee Express, Anteraja, TIKI, Ninja Xpress, POS Indonesia, Lion Parcel, GoSend, GrabExpress, Paxel, ID Express, Wahana, SAP Express, JD Logistics, Lazada Express, Lalamove, dan lainnya.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="foot-top">
+      <div>
+        <a href="#" class="logo">
+          <div class="logo-mark" style="width:28px;height:28px;border-radius:7px">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          </div>
+          <span class="logo-name" style="font-size:.95rem">Track<span>ID</span></span>
+        </a>
+        <p class="foot-tag">Lacak paket dengan mudah &amp; cepat</p>
+      </div>
+      <div class="foot-links">
+        <div class="foot-col">
+          <h4>Layanan</h4>
+          <a href="index.html">Cek Resi</a>
+          <a href="tarif.html">Estimasi Tarif</a>
+          <a href="api.html">API</a>
+        </div>
+        <div class="foot-col">
+          <h4>Info</h4>
+          <a href="tentang.html">Tentang</a>
+          <a href="privasi.html">Privasi</a>
+          <a href="syarat.html">Syarat</a>
+        </div>
+      </div>
+    </div>
+    <div class="foot-bot">
+      <p>&copy; 2025 TrackID &mdash; Dibuat untuk pengguna Indonesia</p>
+    </div>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

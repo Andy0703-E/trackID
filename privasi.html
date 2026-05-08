@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Kebijakan Privasi — TrackID</title>
+  <meta name="description" content="Kebijakan privasi TrackID — bagaimana kami mengelola dan melindungi data Anda."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .page-hero{padding:64px 0 48px;text-align:center;border-bottom:1px solid var(--border)}
+    .page-badge{display:inline-flex;align-items:center;gap:7px;padding:5px 14px;border-radius:100px;background:var(--accent-bg);border:1px solid rgba(14,165,233,.18);font-size:.72rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--accent-2);margin-bottom:18px}
+    .page-hero h1{font-size:clamp(1.8rem,4vw,2.6rem);font-weight:900;letter-spacing:-1px;margin-bottom:12px}
+    .page-hero p{font-size:.9rem;color:var(--txt-2);max-width:520px;margin:0 auto}
+    .page-body{padding:56px 0 80px}
+    .prose{max-width:680px;margin:0 auto}
+    .prose h2{font-size:1.05rem;font-weight:800;margin:36px 0 10px;color:var(--txt);letter-spacing:-.2px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+    .prose h2:first-child{margin-top:0}
+    .prose p{font-size:.875rem;color:var(--txt-2);line-height:1.85;margin-bottom:12px}
+    .prose ul{margin:0 0 14px 18px;display:flex;flex-direction:column;gap:5px}
+    .prose li{font-size:.875rem;color:var(--txt-2);line-height:1.65}
+    .last-updated{display:inline-flex;align-items:center;gap:6px;font-size:.75rem;color:var(--txt-3);background:var(--bg-card);border:1px solid var(--border);border-radius:100px;padding:5px 13px;margin-bottom:36px}
+    .info-box{background:var(--accent-bg);border:1px solid rgba(14,165,233,.15);border-radius:var(--r-sm);padding:16px 18px;margin-bottom:24px}
+    .info-box p{margin:0;color:var(--accent-2);font-size:.85rem;line-height:1.65}
+  </style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<header class="header"><div class="container header-inner">
+  <a href="index.html" class="logo"><div class="logo-mark"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div><span class="logo-name">Track<span>ID</span></span></a>
+  <nav class="nav"><a href="index.html">Lacak Resi</a><a href="tarif.html">Estimasi Tarif</a><a href="api.html">API</a></nav>
+</div></header>
+
+<div class="page-hero"><div class="container">
+  <div class="page-badge">Legal</div>
+  <h1>Kebijakan Privasi</h1>
+  <p>Kami menghormati privasi Anda. Halaman ini menjelaskan bagaimana TrackID mengumpulkan, menggunakan, dan melindungi informasi Anda.</p>
+</div></div>
+
+<div class="page-body"><div class="container"><div class="prose">
+  <div class="last-updated">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    Terakhir diperbarui: 1 Januari 2025
+  </div>
+
+  <div class="info-box">
+    <p>TrackID tidak memerlukan akun atau registrasi. Kami tidak menyimpan data pribadi Anda secara permanen. Nomor resi yang Anda masukkan hanya digunakan untuk menghubungi API ekspedisi terkait.</p>
+  </div>
+
+  <h2>1. Informasi yang Kami Kumpulkan</h2>
+  <p>TrackID dirancang dengan prinsip <em>privacy by default</em>. Kami hanya memproses data yang mutlak diperlukan untuk fungsi pelacakan:</p>
+  <ul>
+    <li><strong>Nomor Resi</strong> — digunakan sementara untuk menghubungi API ekspedisi. Tidak disimpan di server kami.</li>
+    <li><strong>Pilihan Ekspedisi</strong> — menentukan API mana yang dihubungi. Tidak dicatat.</li>
+    <li><strong>Data Teknis</strong> — browser type, IP address (melalui log server standar), dan waktu akses untuk keperluan keamanan dan pemantauan performa.</li>
+  </ul>
+
+  <h2>2. Bagaimana Kami Menggunakan Informasi</h2>
+  <p>Informasi yang dikumpulkan digunakan semata-mata untuk:</p>
+  <ul>
+    <li>Memproses permintaan pelacakan resi secara real-time</li>
+    <li>Memastikan ketersediaan dan performa layanan</li>
+    <li>Mendeteksi dan mencegah penyalahgunaan sistem</li>
+    <li>Menganalisis statistik penggunaan secara anonim untuk meningkatkan layanan</li>
+  </ul>
+
+  <h2>3. Cookie dan Penyimpanan Lokal</h2>
+  <p>TrackID menggunakan cookie minimal yang diperlukan untuk fungsi teknis dasar. Kami tidak menggunakan cookie untuk pelacakan perilaku atau iklan. Pilihan ekspedisi terakhir mungkin disimpan di <em>localStorage</em> browser Anda untuk kenyamanan — data ini sepenuhnya lokal dan tidak dikirim ke server kami.</p>
+
+  <h2>4. Pihak Ketiga</h2>
+  <p>Saat Anda melacak resi, permintaan diteruskan ke API resmi ekspedisi terkait. Data yang dikembalikan oleh ekspedisi tunduk pada kebijakan privasi masing-masing ekspedisi tersebut. TrackID tidak bertanggung jawab atas praktik privasi pihak ketiga ini.</p>
+  <p>Kami juga menggunakan layanan CORS proxy publik sebagai perantara teknis. Proxy ini tidak menyimpan konten permintaan Anda.</p>
+
+  <h2>5. Keamanan Data</h2>
+  <p>Kami menerapkan langkah-langkah keamanan teknis yang wajar untuk melindungi informasi yang diproses melalui platform kami, termasuk koneksi HTTPS terenkripsi untuk semua komunikasi data.</p>
+
+  <h2>6. Hak Anda</h2>
+  <p>Karena TrackID tidak menyimpan data pribadi Anda secara permanen, tidak ada tindakan penghapusan yang diperlukan. Jika Anda memiliki kekhawatiran tentang privasi, silakan hubungi kami melalui email yang tersedia di halaman Tentang Kami.</p>
+
+  <h2>7. Perubahan Kebijakan</h2>
+  <p>Kami dapat memperbarui kebijakan privasi ini sewaktu-waktu. Perubahan signifikan akan diinformasikan melalui pemberitahuan di halaman utama. Dengan terus menggunakan layanan TrackID, Anda menyetujui kebijakan yang berlaku.</p>
+</div></div></div>
+
+<footer class="footer"><div class="container">
+  <div class="foot-top">
+    <div><a href="index.html" class="logo"><div class="logo-mark" style="width:28px;height:28px;border-radius:7px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div><span class="logo-name" style="font-size:.95rem">Track<span>ID</span></span></a><p class="foot-tag">Lacak paket dengan mudah &amp; cepat</p></div>
+    <div class="foot-links"><div class="foot-col"><h4>Layanan</h4><a href="index.html">Cek Resi</a><a href="tarif.html">Estimasi Tarif</a><a href="api.html">API</a></div><div class="foot-col"><h4>Info</h4><a href="tentang.html">Tentang</a><a href="privasi.html">Privasi</a><a href="syarat.html">Syarat</a></div></div>
+  </div>
+  <div class="foot-bot"><p>&copy; 2025 TrackID &mdash; Dibuat untuk pengguna Indonesia</p></div>
+</div></footer>
+</body></html>

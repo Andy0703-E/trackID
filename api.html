@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>API Dokumentasi — TrackID</title>
+  <meta name="description" content="Dokumentasi API publik TrackID untuk pelacakan resi paket Indonesia."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .page-hero{padding:60px 0 44px;text-align:center;border-bottom:1px solid var(--border)}
+    .page-badge{display:inline-flex;align-items:center;gap:7px;padding:5px 14px;border-radius:100px;background:var(--accent-bg);border:1px solid rgba(14,165,233,.18);font-size:.72rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--accent-2);margin-bottom:18px}
+    .page-hero h1{font-size:clamp(1.8rem,4vw,2.6rem);font-weight:900;letter-spacing:-1px;margin-bottom:12px}
+    .page-hero p{font-size:.9rem;color:var(--txt-2);max-width:520px;margin:0 auto}
+    .page-body{padding:48px 0 80px}
+
+    .api-layout{display:grid;grid-template-columns:200px 1fr;gap:32px;align-items:start}
+    @media(max-width:680px){.api-layout{grid-template-columns:1fr}}
+
+    /* Sidebar */
+    .api-sidebar{position:sticky;top:80px}
+    .sidebar-title{font-size:.68rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--txt-3);margin-bottom:10px}
+    .sidebar-nav{display:flex;flex-direction:column;gap:2px}
+    .sidebar-link{padding:7px 12px;border-radius:7px;font-size:.82rem;color:var(--txt-2);text-decoration:none;transition:all .18s;border:1px solid transparent}
+    .sidebar-link:hover{background:var(--bg-hover);color:var(--txt)}
+    .sidebar-link.active{background:var(--accent-bg);color:var(--accent-2);border-color:rgba(14,165,233,.18)}
+
+    /* Content */
+    .api-section{margin-bottom:48px}
+    .api-section h2{font-size:1.1rem;font-weight:800;color:var(--txt);letter-spacing:-.3px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+    .api-section p{font-size:.875rem;color:var(--txt-2);line-height:1.8;margin-bottom:12px}
+
+    /* Method badge */
+    .endpoint-card{background:var(--bg-card);border:1px solid var(--border-2);border-radius:var(--r-sm);overflow:hidden;margin-bottom:20px}
+    .endpoint-header{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--border);background:rgba(255,255,255,.025)}
+    .method{font-size:.7rem;font-weight:800;letter-spacing:.06em;padding:4px 9px;border-radius:5px}
+    .method.get{background:rgba(34,197,94,.15);color:var(--green)}
+    .method.post{background:rgba(14,165,233,.15);color:var(--accent-2)}
+    .endpoint-url{font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--txt-2)}
+    .endpoint-url strong{color:var(--txt)}
+    .endpoint-body{padding:18px}
+    .endpoint-body p{font-size:.85rem;color:var(--txt-2);margin-bottom:12px;line-height:1.7}
+
+    /* Params table */
+    .params-table{width:100%;border-collapse:collapse;margin-bottom:16px}
+    .params-table th{font-size:.68rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--txt-3);padding:8px 12px;text-align:left;background:rgba(255,255,255,.03);border-bottom:1px solid var(--border)}
+    .params-table td{padding:9px 12px;font-size:.82rem;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:top}
+    .params-table tr:last-child td{border-bottom:none}
+    .param-name{font-family:'JetBrains Mono',monospace;color:var(--accent-2)}
+    .param-type{color:var(--txt-3);font-size:.75rem}
+    .param-req{display:inline-block;font-size:.65rem;font-weight:700;padding:2px 6px;border-radius:4px;background:rgba(244,63,94,.12);color:var(--red)}
+    .param-opt{display:inline-block;font-size:.65rem;font-weight:700;padding:2px 6px;border-radius:4px;background:rgba(255,255,255,.06);color:var(--txt-3)}
+
+    /* Code block */
+    .code-block{border-radius:var(--r-sm);overflow:hidden;margin-bottom:16px;border:1px solid var(--border)}
+    .code-header{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:rgba(255,255,255,.04);border-bottom:1px solid var(--border)}
+    .code-lang{font-size:.7rem;font-weight:600;color:var(--txt-3);text-transform:uppercase;letter-spacing:.06em}
+    .copy-btn{font-size:.7rem;padding:3px 10px;border-radius:5px;border:1px solid var(--border);background:none;color:var(--txt-3);cursor:pointer;font-family:inherit;transition:all .18s}
+    .copy-btn:hover{color:var(--txt);background:var(--bg-hover)}
+    .code-block pre{background:#060b16;padding:18px;font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:1.7;color:#7dd3fc;overflow-x:auto;margin:0}
+    .code-block pre .key{color:#93c5fd}
+    .code-block pre .str{color:#86efac}
+    .code-block pre .num{color:#fbbf24}
+    .code-block pre .kw{color:#f472b6}
+
+    /* Status badges */
+    .status-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:16px}
+    .status-item{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:12px 14px}
+    .status-name{font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:600;color:var(--accent-2);margin-bottom:4px}
+    .status-desc{font-size:.75rem;color:var(--txt-3);line-height:1.5}
+
+    .alert-box{background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.18);border-radius:var(--r-sm);padding:14px 16px;margin-bottom:20px}
+    .alert-box p{font-size:.82rem;color:#86efac;margin:0;line-height:1.65}
+  </style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<header class="header"><div class="container header-inner">
+  <a href="index.html" class="logo"><div class="logo-mark"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div><span class="logo-name">Track<span>ID</span></span></a>
+  <nav class="nav"><a href="index.html">Lacak Resi</a><a href="tarif.html">Estimasi Tarif</a><a href="api.html" style="color:var(--txt);background:var(--bg-hover)">API</a></nav>
+</div></header>
+
+<div class="page-hero"><div class="container">
+  <div class="page-badge">Developer</div>
+  <h1>Dokumentasi API</h1>
+  <p>Integrasikan layanan pelacakan resi TrackID ke dalam aplikasi Anda menggunakan API publik kami yang sederhana dan mudah digunakan.</p>
+</div></div>
+
+<div class="page-body"><div class="container">
+  <div class="api-layout">
+    <!-- Sidebar -->
+    <div class="api-sidebar" id="sidebar">
+      <div class="sidebar-title">Navigasi</div>
+      <nav class="sidebar-nav">
+        <a href="#mulai" class="sidebar-link active">Memulai</a>
+        <a href="#track" class="sidebar-link">Track Resi</a>
+        <a href="#spx" class="sidebar-link">SPX / Shopee</a>
+        <a href="#biteship" class="sidebar-link">Biteship</a>
+        <a href="#response" class="sidebar-link">Response Format</a>
+        <a href="#errors" class="sidebar-link">Error Codes</a>
+        <a href="#couriers" class="sidebar-link">Kode Ekspedisi</a>
+      </nav>
+    </div>
+
+    <!-- Content -->
+    <div class="api-content">
+
+      <!-- Mulai -->
+      <div class="api-section" id="mulai">
+        <h2>Memulai</h2>
+        <div class="alert-box"><p>✅ API TrackID menggunakan sumber data publik dari ekspedisi terkait. Tidak diperlukan API key untuk penggunaan dasar. Rate limit berlaku untuk mencegah penyalahgunaan.</p></div>
+        <p>TrackID menggunakan dua sumber API utama: <strong>Biteship Public API</strong> untuk ekspedisi umum (JNE, J&T, SiCepat, dll.) dan <strong>SPX API</strong> untuk Shopee Express. Semua endpoint menggunakan HTTPS.</p>
+        <p>Base URL untuk Biteship Public:</p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">URL</span></div>
+          <pre>https://api.biteship.com/v1/public/trackings</pre>
+        </div>
+        <p>Base URL untuk SPX:</p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">URL</span></div>
+          <pre>https://spx.co.id/shipment/order/open/order/get_order_info</pre>
+        </div>
+      </div>
+
+      <!-- Track Resi -->
+      <div class="api-section" id="track">
+        <h2>Track Resi — Biteship</h2>
+        <p>Endpoint ini digunakan untuk melacak resi dari ekspedisi yang didukung Biteship (JNE, J&T, SiCepat, TIKI, Ninja, dll.).</p>
+        <div class="endpoint-card">
+          <div class="endpoint-header">
+            <span class="method get">GET</span>
+            <span class="endpoint-url"><strong>/v1/public/trackings/{awb}/couriers/{courier}</strong></span>
+          </div>
+          <div class="endpoint-body">
+            <p>Lacak status pengiriman berdasarkan nomor resi dan kode ekspedisi.</p>
+            <table class="params-table">
+              <thead><tr><th>Parameter</th><th>Tipe</th><th>Keterangan</th></tr></thead>
+              <tbody>
+                <tr><td class="param-name">awb <span class="param-req">required</span></td><td class="param-type">string</td><td style="font-size:.8rem;color:var(--txt-2)">Nomor resi / AWB pengiriman</td></tr>
+                <tr><td class="param-name">courier <span class="param-req">required</span></td><td class="param-type">string</td><td style="font-size:.8rem;color:var(--txt-2)">Kode ekspedisi (lihat daftar di bawah)</td></tr>
+              </tbody>
+            </table>
+            <p>Header yang diperlukan:</p>
+            <div class="code-block">
+              <div class="code-header"><span class="code-lang">HTTP Headers</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+              <pre>Authorization: Public
+Accept: application/json
+Origin: https://biteship.com</pre>
+            </div>
+            <p>Contoh permintaan dengan JavaScript:</p>
+            <div class="code-block">
+              <div class="code-header"><span class="code-lang">JavaScript</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+              <pre>const resi = 'JX3708794672';
+const courier = 'jnt';
+const url = `https://api.biteship.com/v1/public/trackings/${resi}/couriers/${courier}`;
+
+const response = await fetch(url, {
+  headers: {
+    'Authorization': 'Public',
+    'Accept': 'application/json',
+    'Origin': 'https://biteship.com'
+  }
+});
+
+const data = await response.json();
+console.log(data);</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SPX -->
+      <div class="api-section" id="spx">
+        <h2>Track Resi — SPX / Shopee Express</h2>
+        <p>Endpoint khusus untuk melacak paket yang dikirim melalui Shopee Express (SPX).</p>
+        <div class="endpoint-card">
+          <div class="endpoint-header">
+            <span class="method get">GET</span>
+            <span class="endpoint-url"><strong>/shipment/order/open/order/get_order_info</strong></span>
+          </div>
+          <div class="endpoint-body">
+            <table class="params-table">
+              <thead><tr><th>Query Param</th><th>Tipe</th><th>Keterangan</th></tr></thead>
+              <tbody>
+                <tr><td class="param-name">spx_tn <span class="param-req">required</span></td><td class="param-type">string</td><td style="font-size:.8rem;color:var(--txt-2)">Nomor resi SPX (format: SPXID...)</td></tr>
+                <tr><td class="param-name">language_code <span class="param-opt">optional</span></td><td class="param-type">string</td><td style="font-size:.8rem;color:var(--txt-2)">Kode bahasa, gunakan <code>id</code> untuk Bahasa Indonesia</td></tr>
+              </tbody>
+            </table>
+            <div class="code-block">
+              <div class="code-header"><span class="code-lang">JavaScript</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+              <pre>const resi = 'SPXID061577510985';
+const url = `https://spx.co.id/shipment/order/open/order/get_order_info?spx_tn=${resi}&language_code=id`;
+
+const response = await fetch(url, {
+  headers: {
+    'Accept': 'application/json',
+    'Cookie': 'app_source=nss; app_lang=id',
+    'Referer': `https://spx.co.id/m/tracking-detail/${resi}`
+  }
+});
+
+const data = await response.json();
+// Data riwayat ada di: data.data.sls_tracking_info.records
+const records = data?.data?.sls_tracking_info?.records || [];</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Response -->
+      <div class="api-section" id="response">
+        <h2>Format Response</h2>
+        <p>Contoh response sukses dari Biteship Public API:</p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">JSON Response</span></div>
+          <pre>{
+  "success": true,
+  "object": "tracking",
+  "id": "...",
+  "waybill_id": "JX3708794672",
+  "courier": {
+    "company": "jnt",
+    "name": "J&T Express",
+    "phone": "..."
+  },
+  "origin": "Jakarta Selatan",
+  "destination": "Surabaya",
+  "status": "delivered",
+  "history": [
+    {
+      "note": "Paket telah diterima",
+      "status": "delivered",
+      "updated_at": "2025-01-15T14:32:00Z",
+      "location": "Surabaya"
+    }
+  ]
+}</pre>
+        </div>
+      </div>
+
+      <!-- Errors -->
+      <div class="api-section" id="errors">
+        <h2>Error Codes</h2>
+        <div class="status-grid">
+          <div class="status-item"><div class="status-name">400</div><div class="status-desc">Parameter tidak valid atau tidak lengkap</div></div>
+          <div class="status-item"><div class="status-name">404</div><div class="status-desc">Nomor resi tidak ditemukan</div></div>
+          <div class="status-item"><div class="status-name">429</div><div class="status-desc">Rate limit tercapai, coba lagi nanti</div></div>
+          <div class="status-item"><div class="status-name">500</div><div class="status-desc">Kesalahan server internal</div></div>
+          <div class="status-item"><div class="status-name">503</div><div class="status-desc">API ekspedisi sedang tidak tersedia</div></div>
+        </div>
+      </div>
+
+      <!-- Couriers -->
+      <div class="api-section" id="couriers">
+        <h2>Kode Ekspedisi</h2>
+        <p>Gunakan kode berikut pada parameter <code style="font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--accent-2)">courier</code>:</p>
+        <table class="params-table">
+          <thead><tr><th>Kode</th><th>Nama Ekspedisi</th><th>Platform</th></tr></thead>
+          <tbody>
+            <tr><td class="param-name">jne</td><td style="font-size:.82rem;color:var(--txt)">JNE Express</td><td style="font-size:.75rem;color:var(--txt-3)">Biteship</td></tr>
+            <tr><td class="param-name">jnt</td><td style="font-size:.82rem;color:var(--txt)">J&T Express</td><td style="font-size:.75rem;color:var(--txt-3)">Biteship</td></tr>
+            <tr><td class="param-name">sicepat</td><td style="font-size:.82rem;color:var(--txt)">SiCepat</td><td style="font-size:.75rem;color:var(--txt-3)">Biteship</td></tr>
+            <tr><td class="param-name">spx_tn</td><td style="font-size:.82rem;color:var(--txt)">SPX / Shopee Express</td><td style="font-size:.75rem;color:var(--txt-3)">SPX Direct</td></tr>
+            <tr><td class="param-name">anteraja</td><td style="font-size:.82rem;color:var(--txt)">Anteraja</td><td style="font-size:.75rem;color:var(--txt-3)">Biteship</td></tr>
+            <tr><td class="param-name">tiki</td><td style="font-size:.82rem;color:var(--txt)">TIKI</td><td style="font-size:.75rem;color:var(--txt-3)">Biteship</td></tr>
+            <tr><td class="param-name">ninja</td><td style="font-size:.82rem;color:var(--txt)">Ninja Xpress</td><td style="font-size:.75rem;color:var(--txt-3)">Biteship</td></tr>
+            <tr><td class="param-name">pos</td><td style="font-size:.82rem;color:var(--txt)">POS Indonesia</td><td style="font-size:.75rem;color:var(--txt-3)">Biteship</td></tr>
+            <tr><td class="param-name">gosend</td><td style="font-size:.82rem;color:var(--txt)">GoSend</td><td style="font-size:.75rem;color:var(--txt-3)">Biteship</td></tr>
+            <tr><td class="param-name">grab</td><td style="font-size:.82rem;color:var(--txt)">GrabExpress</td><td style="font-size:.75rem;color:var(--txt-3)">Biteship</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+<footer class="footer"><div class="container">
+  <div class="foot-top">
+    <div><a href="index.html" class="logo"><div class="logo-mark" style="width:28px;height:28px;border-radius:7px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div><span class="logo-name" style="font-size:.95rem">Track<span>ID</span></span></a><p class="foot-tag">Lacak paket dengan mudah &amp; cepat</p></div>
+    <div class="foot-links"><div class="foot-col"><h4>Layanan</h4><a href="index.html">Cek Resi</a><a href="tarif.html">Estimasi Tarif</a><a href="api.html">API</a></div><div class="foot-col"><h4>Info</h4><a href="tentang.html">Tentang</a><a href="privasi.html">Privasi</a><a href="syarat.html">Syarat</a></div></div>
+  </div>
+  <div class="foot-bot"><p>&copy; 2025 TrackID &mdash; Dibuat untuk pengguna Indonesia</p></div>
+</div></footer>
+
+<script>
+function copyCode(btn) {
+  const pre = btn.closest('.code-block').querySelector('pre');
+  navigator.clipboard.writeText(pre.textContent).then(() => {
+    btn.textContent = 'Tersalin!';
+    setTimeout(() => btn.textContent = 'Salin', 2000);
+  });
+}
+
+// Active sidebar on scroll
+const sections = document.querySelectorAll('.api-section');
+const links = document.querySelectorAll('.sidebar-link');
+window.addEventListener('scroll', () => {
+  let cur = '';
+  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 120) cur = s.id; });
+  links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#'+cur));
+});
+</script>
+</body></html>

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Estimasi Tarif — TrackID</title>
+  <meta name="description" content="Cek estimasi tarif pengiriman antar kota dari berbagai ekspedisi Indonesia."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .page-hero{padding:60px 0 44px;text-align:center;border-bottom:1px solid var(--border)}
+    .page-badge{display:inline-flex;align-items:center;gap:7px;padding:5px 14px;border-radius:100px;background:var(--accent-bg);border:1px solid rgba(14,165,233,.18);font-size:.72rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--accent-2);margin-bottom:18px}
+    .page-hero h1{font-size:clamp(1.8rem,4vw,2.6rem);font-weight:900;letter-spacing:-1px;margin-bottom:12px}
+    .page-hero p{font-size:.9rem;color:var(--txt-2);max-width:520px;margin:0 auto}
+    .page-body{padding:48px 0 80px}
+
+    /* Tarif form */
+    .tarif-card{background:var(--bg-card);border:1px solid var(--border-2);border-radius:var(--r);padding:28px;box-shadow:var(--sh-lg);backdrop-filter:blur(24px);position:relative}
+    .tarif-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    @media(max-width:560px){.tarif-grid{grid-template-columns:1fr}}
+    .tarif-row{display:grid;grid-template-columns:1fr 1fr auto;gap:14px;align-items:end;margin-top:14px}
+    @media(max-width:560px){.tarif-row{grid-template-columns:1fr}}
+
+    .field{display:flex;flex-direction:column;gap:7px}
+    .field-label{font-size:.7rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--txt-3)}
+    .input-wrap{position:relative;display:flex;align-items:center}
+    .field-ico{position:absolute;left:13px;color:var(--txt-3);pointer-events:none;flex-shrink:0}
+    .field-input,.field-select{width:100%;height:48px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:var(--r-sm);color:var(--txt);font-family:inherit;font-size:.875rem;padding:0 14px 0 40px;outline:none;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none;appearance:none}
+    .field-input:focus,.field-select:focus{border-color:var(--accent);background:rgba(14,165,233,.05);box-shadow:0 0 0 3px var(--accent-glow)}
+    .field-select option{background:#0d1424}
+    .sel-arrow{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--txt-3);pointer-events:none}
+    .field-input::placeholder{color:var(--txt-3)}
+    .btn-check{height:48px;padding:0 24px;border-radius:var(--r-sm);background:var(--accent);border:none;color:#fff;font-family:inherit;font-size:.875rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;white-space:nowrap;transition:background .2s,transform .15s;box-shadow:0 4px 18px rgba(14,165,233,.35)}
+    .btn-check:hover{background:#0284c7;transform:translateY(-1px)}
+    .btn-check:disabled{opacity:.5;cursor:not-allowed;transform:none}
+
+    /* Result table */
+    .result-tarif{margin-top:24px;display:none}
+    .result-tarif.show{display:block;animation:slideUp .3s ease}
+    @keyframes slideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+    .result-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px}
+    .result-title{font-size:.9rem;font-weight:700;color:var(--txt)}
+    .route-tag{font-size:.78rem;color:var(--accent-2);background:var(--accent-bg);border:1px solid rgba(14,165,233,.18);padding:4px 12px;border-radius:100px;font-family:'JetBrains Mono',monospace}
+    .tarif-table{width:100%;border-collapse:collapse;border-radius:var(--r-sm);overflow:hidden;border:1px solid var(--border)}
+    .tarif-table th{background:rgba(255,255,255,.04);padding:11px 14px;text-align:left;font-size:.72rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--txt-3);border-bottom:1px solid var(--border)}
+    .tarif-table td{padding:12px 14px;font-size:.85rem;border-bottom:1px solid rgba(255,255,255,.04)}
+    .tarif-table tr:last-child td{border-bottom:none}
+    .tarif-table tr:hover td{background:rgba(255,255,255,.02)}
+    .courier-cell{display:flex;align-items:center;gap:10px}
+    .courier-dot{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.55rem;font-weight:800;color:#fff;flex-shrink:0}
+    .price-cell{font-weight:700;color:var(--txt)}
+    .etd-cell{color:var(--txt-2)}
+    .service-cell{font-size:.78rem;color:var(--txt-3)}
+    .cheapest{background:rgba(34,197,94,.06);border-left:2px solid var(--green)}
+    .cheapest .price-cell{color:var(--green)}
+    .badge-cheapest{font-size:.65rem;font-weight:700;background:var(--green-bg);color:var(--green);border-radius:4px;padding:2px 6px;margin-left:6px}
+
+    /* Note box */
+    .note-box{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-sm);padding:16px 18px;margin-top:16px}
+    .note-box p{font-size:.78rem;color:var(--txt-3);line-height:1.65;margin:0}
+
+    /* Loading overlay */
+    .card-overlay{position:absolute;inset:0;border-radius:var(--r);background:rgba(8,13,24,.75);backdrop-filter:blur(4px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:10;animation:fadeIn .2s ease}
+    .card-overlay p{font-size:.875rem;font-weight:600;color:var(--txt-2)}
+    .progress-bar{width:140px;height:3px;border-radius:2px;background:rgba(255,255,255,.08);overflow:hidden}
+    .progress-fill{height:100%;border-radius:2px;background:var(--accent);animation:progress 2s ease-in-out infinite}
+    @keyframes progress{0%{width:0%;margin-left:0%}50%{width:70%;margin-left:0%}100%{width:0%;margin-left:100%}}
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    .spin{animation:spin .75s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+  </style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<header class="header"><div class="container header-inner">
+  <a href="index.html" class="logo"><div class="logo-mark"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div><span class="logo-name">Track<span>ID</span></span></a>
+  <nav class="nav"><a href="index.html">Lacak Resi</a><a href="tarif.html" style="color:var(--txt);background:var(--bg-hover)">Estimasi Tarif</a><a href="api.html">API</a></nav>
+</div></header>
+
+<div class="page-hero"><div class="container">
+  <div class="page-badge">Kalkulator Tarif</div>
+  <h1>Estimasi Ongkos Kirim</h1>
+  <p>Bandingkan tarif pengiriman dari berbagai ekspedisi sekaligus. Masukkan kota asal, tujuan, dan berat paket.</p>
+</div></div>
+
+<div class="page-body"><div class="container" style="max-width:720px">
+  <div class="tarif-card" id="tarifCard">
+    <div class="card-overlay hidden" id="tarifOverlay">
+      <svg class="spin" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+      <p>Mengambil data tarif…</p>
+      <div class="progress-bar"><div class="progress-fill"></div></div>
+    </div>
+
+    <div class="tarif-grid">
+      <div class="field">
+        <label class="field-label" for="kotaAsal">Kota Asal</label>
+        <div class="input-wrap">
+          <svg class="field-ico" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 8 12 12 14 14"/></svg>
+          <input type="text" id="kotaAsal" class="field-input" placeholder="Contoh: Jakarta Selatan" list="kotaList"/>
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label" for="kotaTujuan">Kota Tujuan</label>
+        <div class="input-wrap">
+          <svg class="field-ico" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <input type="text" id="kotaTujuan" class="field-input" placeholder="Contoh: Surabaya" list="kotaList"/>
+        </div>
+      </div>
+    </div>
+
+    <datalist id="kotaList">
+      <option value="Jakarta Selatan"/><option value="Jakarta Barat"/><option value="Jakarta Pusat"/>
+      <option value="Jakarta Utara"/><option value="Jakarta Timur"/><option value="Surabaya"/>
+      <option value="Bandung"/><option value="Medan"/><option value="Makassar"/><option value="Semarang"/>
+      <option value="Palembang"/><option value="Tangerang"/><option value="Depok"/><option value="Bekasi"/>
+      <option value="Bogor"/><option value="Yogyakarta"/><option value="Malang"/><option value="Denpasar"/>
+      <option value="Balikpapan"/><option value="Banjarmasin"/><option value="Pontianak"/><option value="Pekanbaru"/>
+    </datalist>
+
+    <div class="tarif-row">
+      <div class="field">
+        <label class="field-label" for="beratInput">Berat (gram)</label>
+        <div class="input-wrap">
+          <svg class="field-ico" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a8 8 0 1 0 0 16A8 8 0 0 0 12 2z"/><path d="M12 6v6l4 2"/></svg>
+          <input type="number" id="beratInput" class="field-input" placeholder="1000" min="1" max="100000" value="1000"/>
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label" for="ekspedisiFilter">Filter Ekspedisi</label>
+        <div class="input-wrap">
+          <svg class="field-ico" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+          <select id="ekspedisiFilter" class="field-select">
+            <option value="semua">Semua Ekspedisi</option>
+            <option value="jne">JNE Express</option>
+            <option value="jnt">J&T Express</option>
+            <option value="sicepat">SiCepat</option>
+            <option value="tiki">TIKI</option>
+            <option value="pos">POS Indonesia</option>
+          </select>
+          <svg class="sel-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </div>
+      <button class="btn-check" id="checkBtn">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        Cek Tarif
+      </button>
+    </div>
+
+    <!-- Result -->
+    <div class="result-tarif" id="resultTarif">
+      <div class="result-header">
+        <span class="result-title">Hasil Perbandingan Tarif</span>
+        <span class="route-tag" id="routeTag"></span>
+      </div>
+      <table class="tarif-table">
+        <thead><tr><th>Ekspedisi &amp; Layanan</th><th>Estimasi Tiba</th><th>Tarif</th></tr></thead>
+        <tbody id="tarifBody"></tbody>
+      </table>
+      <div class="note-box"><p>⚠️ Tarif di atas adalah estimasi berdasarkan data referensi dan dapat berbeda dengan tarif aktual. Kunjungi website resmi ekspedisi untuk tarif terkini dan akurat.</p></div>
+    </div>
+  </div>
+</div></div>
+
+<footer class="footer"><div class="container">
+  <div class="foot-top">
+    <div><a href="index.html" class="logo"><div class="logo-mark" style="width:28px;height:28px;border-radius:7px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div><span class="logo-name" style="font-size:.95rem">Track<span>ID</span></span></a><p class="foot-tag">Lacak paket dengan mudah &amp; cepat</p></div>
+    <div class="foot-links"><div class="foot-col"><h4>Layanan</h4><a href="index.html">Cek Resi</a><a href="tarif.html">Estimasi Tarif</a><a href="api.html">API</a></div><div class="foot-col"><h4>Info</h4><a href="tentang.html">Tentang</a><a href="privasi.html">Privasi</a><a href="syarat.html">Syarat</a></div></div>
+  </div>
+  <div class="foot-bot"><p>&copy; 2025 TrackID &mdash; Dibuat untuk pengguna Indonesia</p></div>
+</div></footer>
+
+<script>
+// Tarif data (referensi estimasi per 100 gram)
+const TARIF_DATA = [
+  { courier:'JNE',  abbr:'JNE', bg:'linear-gradient(135deg,#b91c1c,#ef4444)', services:[
+    { name:'REG',  ratePerKg:9000,  etd:'2-3 hari' },
+    { name:'YES',  ratePerKg:19000, etd:'1 hari' },
+    { name:'OKE',  ratePerKg:7000,  etd:'4-7 hari' },
+  ]},
+  { courier:'J&T',  abbr:'J&T', bg:'linear-gradient(135deg,#b91c1c,#f97316)', services:[
+    { name:'EZ',   ratePerKg:9000,  etd:'2-4 hari' },
+    { name:'Express', ratePerKg:13000, etd:'1-2 hari' },
+  ]},
+  { courier:'SiCepat', abbr:'SCP', bg:'linear-gradient(135deg,#c2410c,#fb923c)', services:[
+    { name:'REG',  ratePerKg:8500,  etd:'2-4 hari' },
+    { name:'BEST', ratePerKg:20000, etd:'1 hari' },
+    { name:'GOKIL',ratePerKg:6500,  etd:'5-7 hari' },
+  ]},
+  { courier:'TIKI', abbr:'TIKI', bg:'linear-gradient(135deg,#1d4ed8,#3b82f6)', services:[
+    { name:'REG',  ratePerKg:9500,  etd:'3-5 hari' },
+    { name:'ONS',  ratePerKg:22000, etd:'1 hari' },
+    { name:'ECO',  ratePerKg:6000,  etd:'5-7 hari' },
+  ]},
+  { courier:'POS', abbr:'POS', bg:'linear-gradient(135deg,#b45309,#f59e0b)', services:[
+    { name:'Kilat Khusus', ratePerKg:8000, etd:'2-5 hari' },
+    { name:'Biasa',        ratePerKg:4000, etd:'7-14 hari' },
+  ]},
+];
+
+function fmtRp(n) {
+  return 'Rp ' + n.toLocaleString('id-ID');
+}
+
+function calcTarif(berat, filter) {
+  const beratKg = Math.max(1, Math.ceil(berat / 1000));
+  const rows = [];
+  for (const c of TARIF_DATA) {
+    if (filter !== 'semua' && c.courier.toLowerCase().replace(/[^a-z]/g,'') !== filter) continue;
+    for (const s of c.services) {
+      rows.push({ courier: c.courier, abbr: c.abbr, bg: c.bg, service: s.name, etd: s.etd, price: s.ratePerKg * beratKg });
+    }
+  }
+  rows.sort((a,b) => a.price - b.price);
+  return rows;
+}
+
+document.getElementById('checkBtn').addEventListener('click', () => {
+  const asal    = document.getElementById('kotaAsal').value.trim();
+  const tujuan  = document.getElementById('kotaTujuan').value.trim();
+  const berat   = parseInt(document.getElementById('beratInput').value) || 1000;
+  const filter  = document.getElementById('ekspedisiFilter').value;
+
+  if (!asal || !tujuan) {
+    if (!asal) document.getElementById('kotaAsal').style.borderColor='var(--red)';
+    if (!tujuan) document.getElementById('kotaTujuan').style.borderColor='var(--red)';
+    setTimeout(() => {
+      document.getElementById('kotaAsal').style.borderColor='';
+      document.getElementById('kotaTujuan').style.borderColor='';
+    }, 1400);
+    return;
+  }
+
+  const overlay = document.getElementById('tarifOverlay');
+  overlay.classList.remove('hidden');
+  document.getElementById('checkBtn').disabled = true;
+
+  setTimeout(() => {
+    overlay.classList.add('hidden');
+    document.getElementById('checkBtn').disabled = false;
+
+    const rows = calcTarif(berat, filter);
+    document.getElementById('routeTag').textContent = `${asal} → ${tujuan} · ${berat.toLocaleString('id-ID')} gram`;
+
+    const tbody = document.getElementById('tarifBody');
+    tbody.innerHTML = rows.map((r, i) => `
+      <tr class="${i===0?'cheapest':''}">
+        <td><div class="courier-cell"><div class="courier-dot" style="background:${r.bg}">${r.abbr}</div><div><div style="font-size:.85rem;font-weight:600;color:var(--txt)">${r.courier}</div><div class="service-cell">${r.service}</div></div>${i===0?'<span class="badge-cheapest">Termurah</span>':''}</div></td>
+        <td class="etd-cell">${r.etd}</td>
+        <td class="price-cell">${fmtRp(r.price)}</td>
+      </tr>`).join('');
+
+    document.getElementById('resultTarif').classList.add('show');
+  }, 1200);
+});
+
+// Allow Enter key
+['kotaAsal','kotaTujuan','beratInput'].forEach(id => {
+  document.getElementById(id).addEventListener('keydown', e => { if (e.key==='Enter') document.getElementById('checkBtn').click(); });
+});
+</script>
+</body></html>
